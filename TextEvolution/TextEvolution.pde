@@ -3,12 +3,12 @@ import geomerative.*;
 RShape shan0, shan1, shan2, shan3, shan4, shan5, shan6; //shape of different evolution stages of "shan"
 RPoint[] shan_pts1, shan_pts2; //point arrays for shan0-shan6
 RContour shan_ct0, shan_ct1, shan_ct2, shan_ct3, shan_ct4, shan_ct5, shan_ct6; //contour for each stage
-RPoint[] diff1;
+RPoint[] diff1, shan_pts2_normalized;
 
 void setup(){
   //initialize the sketch
   size(600, 800);
-  frameRate(5);
+  frameRate(10);
   background(225);
   fill(70, 102, 127);
   strokeWeight(5);
@@ -31,9 +31,13 @@ void setup(){
   //get points for contour
   shan_pts1 = shan1.getPoints();
   shan_pts2 = shan2.getPoints();
-  
+   
   //initialize the points difference for movement
-  diff1 = new RPoint[shan_pts1.length];
+  //diff1 = new RPoint[shan_pts1.length];
+  shan_pts2_normalized = new RPoint[shan_pts1.length];
+  for (int i = 0; i < shan_pts1.length; i ++) {
+  shan_pts2_normalized[i] = new RPoint(shan_pts2[floor((i*shan_pts2.length)/shan_pts1.length)]);
+  }
   
   //create the instance of contour
    //shan_ct1 = new RContour(shan_pts1);
@@ -46,25 +50,27 @@ void draw(){
   background(225);
   
   //set to draw in the center of the sketch
-  translate(width/3, height/3);
+  translate(width/4, height/4);
+  scale(3);
   
   //get the contour by points if there is any
   //if(shan_pts0 != null){
     noFill();
-    strokeWeight(4);
+    strokeWeight(1);
     stroke(200,200,0);
   
   //count the points
   println(shan_pts1.length);
   
   //move the points  
-  for(int i=0; i<shan_pts1.length; i++){
-    shan_pts2[(int)(i*shan_pts2.length)/shan_pts1.length].sub(shan_pts1[i]);
-    diff1[i] = shan_pts2[(int)(i*shan_pts2.length)/shan_pts1.length];
-    shan_pts1[i].add(diff1[i]);
+  //for(int i=0; i<shan_pts1.length; i++){
+    if(frameCount <= shan_pts1.length){ //change by framecount
+    int i = frameCount % shan_pts1.length;
+    shan_pts1[i] = shan_pts2_normalized[i];
+    //shan_ct1 = new RContour(shan_pts1);
+    }
+  //}
     shan_ct1 = new RContour(shan_pts1);
-  }
-    
     shan_ct1.draw();
     //shan_ct2.draw();
 //  }
