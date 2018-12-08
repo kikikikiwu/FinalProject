@@ -1,14 +1,16 @@
 import geomerative.*;
 
-RShape shan0, shan1, shan2, shan3, shan4, shan5, shan6; //shape of different evolution stages of "shan"
-RPoint[] shan_pts1, shan_pts2; //point arrays for shan0-shan6
-RContour shan_ct0, shan_ct1, shan_ct2, shan_ct3, shan_ct4, shan_ct5, shan_ct6; //contour for each stage
-RPoint[] diff1, shan_pts2_normalized;
+RShape[] shan; //array of shan graphic stage
+RPoint[] shan_pts0, shan_pts1, shan_pts2, shan_pts3, shan_pts4, shan_pts5; //arrays of each stage's points
+RPoint[] draw_pts;
+RPoint[][] shan_pts_normalized; //an array of the normalizations of all stages' points
+RContour[] shan_ct; //contour arrays for all stages
+int n; //number of points of each contour
 
 void setup(){
   //initialize the sketch
   size(600, 800);
-  frameRate(10);
+  frameRate(30);
   background(225);
   fill(70, 102, 127);
   strokeWeight(5);
@@ -19,30 +21,44 @@ void setup(){
   
   //load stage 0-6 graphics
   imageMode(CENTER);
-  shan0 = RG.getText("shan","ArmWrestler.ttf", 200, CENTER); 
-  shan1 = RG.loadShape("shan1.svg");
-  shan2 = RG.loadShape("shan2.svg");
-  shan3 = RG.loadShape("shan3.svg");
-  shan4 = RG.loadShape("shan4.svg");
-  shan5 = RG.loadShape("shan5.svg");
-  shan6 = RG.loadShape("shan6.svg");
+  shan = new RShape[6]; 
+  shan[0] = RG.loadShape("shan1.svg");
+  shan[1] = RG.loadShape("shan2.svg");
+  shan[2] = RG.loadShape("shan3.svg");
+  shan[3] = RG.loadShape("shan4.svg");
+  shan[4] = RG.loadShape("shan5.svg");
+  shan[5] = RG.loadShape("shan6.svg");
   
   
-  //get points for contour
-  shan_pts1 = shan1.getPoints();
-  shan_pts2 = shan2.getPoints();
-   
-  //initialize the points difference for movement
-  //diff1 = new RPoint[shan_pts1.length];
-  shan_pts2_normalized = new RPoint[shan_pts1.length];
-  for (int i = 0; i < shan_pts1.length; i ++) {
-  shan_pts2_normalized[i] = new RPoint(shan_pts2[floor((i*shan_pts2.length)/shan_pts1.length)]);
+  //initialize array
+  shan_pts0 = shan[0].getPoints();
+  shan_pts1 = shan[1].getPoints();
+  shan_pts2 = shan[2].getPoints();
+  shan_pts3 = shan[3].getPoints();
+  shan_pts4 = shan[4].getPoints();
+  shan_pts5 = shan[5].getPoints();
+     
+  shan_ct = new RContour [shan.length];
+  for(int i=0; i<shan.length; i++){
+    shan_ct[i] = new RContour();
   }
   
-  //create the instance of contour
-   //shan_ct1 = new RContour(shan_pts1);
-   //shan_ct2 = new RContour(shan_pts2);
+  n = shan_pts0.length; //normalized standard
+  draw_pts = new RPoint [n];
+  shan_pts_normalized = new RPoint [shan.length][n];
   
+  //normalization
+  for (int i = 0; i < n; i ++) {
+    shan_pts_normalized[0][i]= shan_pts0[i];
+    shan_pts_normalized[1][i] = new RPoint(shan_pts1[floor((i*shan_pts1.length)/n)]);
+    shan_pts_normalized[2][i] = new RPoint(shan_pts2[floor((i*shan_pts2.length)/n)]);
+    shan_pts_normalized[3][i] = new RPoint(shan_pts3[floor((i*shan_pts3.length)/n)]);
+    shan_pts_normalized[4][i] = new RPoint(shan_pts4[floor((i*shan_pts4.length)/n)]);
+    shan_pts_normalized[5][i] = new RPoint(shan_pts5[floor((i*shan_pts5.length)/n)]);
+    
+  //initialize array   
+    draw_pts[i] = shan_pts0[i];
+    }
 }
 
 void draw(){
@@ -53,28 +69,19 @@ void draw(){
   translate(width/4, height/4);
   scale(3);
   
-  //get the contour by points if there is any
-  //if(shan_pts0 != null){
-    noFill();
-    strokeWeight(1);
-    stroke(200,200,0);
+  strokeWeight(1);
+  stroke(200,200,0);
   
-  //count the points
-  println(shan_pts1.length);
-  
-  //move the points  
-  //for(int i=0; i<shan_pts1.length; i++){
-    if(frameCount <= shan_pts1.length){ //change by framecount
-    int i = frameCount % shan_pts1.length;
-    shan_pts1[i] = shan_pts2_normalized[i];
-    //shan_ct1 = new RContour(shan_pts1);
-    }
-  //}
-    shan_ct1 = new RContour(shan_pts1);
-    shan_ct1.draw();
-    //shan_ct2.draw();
-//  }
-  
+  //move stage by stage  
+   for(int i=0; i<(floor(frameCount/n))%6; i++){
+  //index increase frame by frame
+     int f = frameCount % n;
+  //pass the normalized data to the drawing points
+     draw_pts [f] = new RPoint (shan_pts_normalized[i][f]);
+     shan_ct[i] = new RContour(draw_pts);
+     shan_ct[i].draw();
+   }
+   
   //add or reduce points when the contour length increase or decrease
   
 }
