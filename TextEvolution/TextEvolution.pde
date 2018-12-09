@@ -4,8 +4,11 @@ RShape[] shan; //array of shan graphic stage
 RPoint[] shan_pts0, shan_pts1, shan_pts2, shan_pts3, shan_pts4, shan_pts5; //arrays of each stage's points
 RPoint[] draw_pts;
 RPoint[][] shan_pts_normalized; //an array of the normalizations of all stages' points
-RContour[] shan_ct; //contour arrays for all stages
+RContour shan_ct; //contour for each stages
 int n; //number of points of each contour
+//declare two index counters to identify the stage and its points
+int shanIndex = 0;
+int shanPtIndex = 0;
 
 void setup(){
   //initialize the sketch
@@ -28,8 +31,7 @@ void setup(){
   shan[3] = RG.loadShape("shan4.svg");
   shan[4] = RG.loadShape("shan5.svg");
   shan[5] = RG.loadShape("shan6.svg");
-  
-  
+    
   //initialize array
   shan_pts0 = shan[0].getPoints();
   shan_pts1 = shan[1].getPoints();
@@ -37,11 +39,6 @@ void setup(){
   shan_pts3 = shan[3].getPoints();
   shan_pts4 = shan[4].getPoints();
   shan_pts5 = shan[5].getPoints();
-     
-  shan_ct = new RContour [shan.length];
-  for(int i=0; i<shan.length; i++){
-    shan_ct[i] = new RContour();
-  }
   
   n = shan_pts0.length; //normalized standard
   draw_pts = new RPoint [n];
@@ -59,6 +56,8 @@ void setup(){
   //initialize array   
     draw_pts[i] = shan_pts0[i];
     }
+    
+  smooth();
 }
 
 void draw(){
@@ -72,16 +71,16 @@ void draw(){
   strokeWeight(1);
   stroke(200,200,0);
   
-  //move stage by stage  
-   for(int i=0; i<(floor(frameCount/n))%6; i++){
-  //index increase frame by frame
-     int f = frameCount % n;
+  //rest intervel
+  int intervel = 30;
+  //move stage by stage
+  shanIndex = (floor(frameCount/(n+intervel))) % shan.length; //loop from 0 to 5
+  //interate each stage's points by increasing one for each loop
+  if (frameCount >= (shanIndex*(n+intervel) + 1) || frameCount <= (shanIndex*(n+intervel) + n)){
+    shanPtIndex = (shanPtIndex + 1) % n; //loop from 0 to n-1
+  }  
   //pass the normalized data to the drawing points
-     draw_pts [f] = new RPoint (shan_pts_normalized[i][f]);
-     shan_ct[i] = new RContour(draw_pts);
-     shan_ct[i].draw();
-   }
-   
-  //add or reduce points when the contour length increase or decrease
-  
+     draw_pts [shanPtIndex] = new RPoint (shan_pts_normalized[shanIndex][shanPtIndex]);
+     shan_ct = new RContour(draw_pts);
+     shan_ct.draw();
 }
