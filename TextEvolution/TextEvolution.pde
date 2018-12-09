@@ -14,7 +14,7 @@ int shanPtIndex = 0;
 void setup(){
   //initialize the sketch
   size(600, 800);
-  frameRate(20);
+  frameRate(60);
   background(225);
   
   //initialize the library
@@ -38,7 +38,7 @@ void setup(){
   shan_pts4 = shan[4].getPoints();
   shan_pts5 = shan[5].getPoints();
   
-  n = shan_pts0.length; //normalized standard
+  n = 400; //normalized standard
   draw_pts = new RPoint [n];
   shan_pts_normalized = new RPoint [shan.length][n];
   
@@ -76,7 +76,7 @@ void draw(){
   //interate each stage's points by increasing one for each loop
     //if (frameCount >= (shanIndex*(n+intervel) + 1) && frameCount <= (shanIndex*(n+intervel) + n)){
       shanPtIndex = (shanPtIndex + 1) % n; //loop from 0 to n-1  
-      println(frameCount,shanPtIndex);
+      println(shan_pts3.length);
     //}
   
   //pass the normalized data to the drawing points
@@ -95,6 +95,6 @@ void draw(){
   float yloc = draw_pts [shanPtIndex].y;
   noStroke();
   fill(200,30,0);
-  ellipse(xloc, yloc, 8-shanIndex,8-shanIndex);
+  ellipse(xloc, yloc, 7-shanIndex,7-shanIndex);
    
 }
