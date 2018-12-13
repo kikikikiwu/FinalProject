@@ -7,8 +7,11 @@ class Chinese{
   int num, intervel;
   int stageIndex, stagePtIndex;
   float x, y; //location for each character
-  float stage_x, stage_y, tan_x, tan_y;
-  
+  float tan_x, tan_y; //location of tangents
+  ArrayList<PVector> eloc = new ArrayList<PVector>(); //pen points
+  ArrayList<PVector> pline_s = new ArrayList<PVector>(); //purpleLine startings
+  ArrayList<PVector> pline_e = new ArrayList<PVector>(); //purpleLine endings
+   
   //constructor
   Chinese(RShape[] stages_, float x_, float y_){
   
@@ -52,7 +55,7 @@ class Chinese{
     }
   }
   
-  void drawPt(){    
+  void drawPt(){   
     //set intervel
     stageIndex = (floor(frameCount/(num+intervel))) % stages.length; //loop from 0 to 5
     stagePtIndex = (stagePtIndex + 1) % num; //increase by 1 per frame and loop from 0 to n-1  
@@ -65,61 +68,87 @@ class Chinese{
     draw_pts[stagePtIndex].scale(0.32);
     draw_pts[stagePtIndex].translate(x, y+20);
     tan[stagePtIndex].scale(0.32);
-    tan[stagePtIndex].translate(x, y);
+    tan[stagePtIndex].translate(x, y);   
     
     /*
     //draw contour, starting from the second stage
     if(stageIndex >=1){
     strokeWeight(1);
-    stroke(200,150,150,10);
+    stroke(200,150,150,90);
     stage_ct = new RContour(draw_pts);
     stage_ct.draw();
     }
     */
-      
-    effect();
+          
+    effects();
     intervel();
   }
   
+  void effects(){
+    //mouse-controlled camera effect
+      if(mousePressed){
+        //rotate effect
+        rotateX(radians(map(mouseY, 0, height, 90, -90)));
+        rotateY(radians(map(mouseX, 0, width, -90, 90)));
+      }
+       
+    //tangent line effect
+      //style
+      stroke(60, 20, 170, 30);
+      strokeWeight(3);
+      //initialize tangent location
+      tan_x = tan[stagePtIndex].x;
+      tan_y = tan[stagePtIndex].y;
+      //interate the array to store locations
+      for(int i=0; i<pline_s.size(); i++){
+        PVector ps = pline_s.get(i);
+        PVector pe = pline_e.get(i);
+        //draw the whole array
+        line(ps.x, ps.y, -300, pe.x, pe.y, 0);
+      }   
+      //add line points and store them into the above array
+      pline_s.add(new PVector(tan_x, tan_y));
+      pline_e.add(new PVector(mouseX, mouseY));
+      
+      /*
+      //purple tangent lines
+      stroke(60, 20, 170, 8);
+      strokeWeight(3);
+      line(tan_x, tan_y, -300, mouseX, mouseY, 0); 
+      */
+      
+    //ellipsePen effect
+      //style
+      noStroke();
+      fill(255,200);
+      //interate the array to store locations
+      for(int i=0; i<eloc.size(); i++){
+        PVector e = eloc.get(i);
+        //draw the whole array
+        ellipse(e.x, e.y, 6, 6);
+      }   
+      //add pen points and store it into the above array
+      eloc.add(new PVector(draw_pts[stagePtIndex].x, draw_pts[stagePtIndex].y));
+    
+    //contour effect
+      //draw contour when keypressed, starting from the second stage
+      if(keyPressed){
+        if(stageIndex >=1){
+        strokeWeight(1);
+        stroke(200,150,150,80);
+        stage_ct = new RContour(draw_pts);
+        stage_ct.draw();
+        }
+      }
+  } 
   void intervel(){
-    //clean frame but leave previous trace between stages
+    //clean frame
     if(frameCount % (num+intervel) == 0){
       background(0);
+      eloc.clear();
+      pline_s.clear();
+      pline_e.clear();
     }
   }
-  
-  void effect(){
-    //initialize location
-    stage_x = draw_pts[stagePtIndex].x;
-    stage_y = draw_pts[stagePtIndex].y;
-    tan_x = tan[stagePtIndex].x;
-    tan_y = tan[stagePtIndex].y;
-    
-    //ellipsePen
-    noStroke();
-    fill(255,200);
-    ellipse(stage_x, stage_y, 6, 6);
-    
-    //draw contour, starting from the second stage
-    if(keyPressed){
-      if(stageIndex >=1){
-      strokeWeight(1);
-      stroke(200,150,150,10);
-      stage_ct = new RContour(draw_pts);
-      stage_ct.draw();
-      }
-    }
-    
-    //purple tangent lines
-    stroke(60, 20, 170, 10);
-    strokeWeight(3);
-    noFill();
-    line(tan_x, tan_y, -300, mouseX, mouseY, 0); 
-    
-    if(mousePressed){
-      //rotate effect
-      rotateX(radians(map(mouseY, 0, height, 90, -90)));
-      rotateY(radians(map(mouseX, 0, width, -90, 90)));
-      }
-  }
+   
 }

@@ -4,7 +4,7 @@ class DropText {
   String[] word;
   int idx;
   PFont f;
-  float s = 40, dr; //size and decrease rate
+  float s = 40, a = 150, dr1, dr2; //size, alpha and their decrease rates
   
   DropText(float x_, float y_, String[] word_) {
     
@@ -16,7 +16,8 @@ class DropText {
     
     //style
     f = createFont("Monoton-Regular.ttf", 40);
-    dr = 0.5;
+    dr1 = 0.5;
+    dr2 = 1;
     
     /*
     //mover stats
@@ -27,9 +28,14 @@ class DropText {
   
   void display() {
     //animation factor
-    s = s - dr;
+    s = s - dr1;
+    a = a - dr2;
     if ( s <= 0){
       s = 0;
+      return;
+    }
+    if (a <= 0){
+      a = 0;
       return;
     }
     
@@ -37,7 +43,7 @@ class DropText {
     textAlign(CENTER);
     textFont(f);
     textSize(s);
-    fill(232, 174, 43, s);
+    fill(232, 174, 43, a);
     
    //update word index depending on mouse location
    if(location.x <= width/3 && location.y <= height/2){

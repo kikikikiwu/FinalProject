@@ -1,14 +1,16 @@
 import geomerative.*;
 
+//Chinese graphics
 RShape[] shan, bai, niu, ren, shou, yun; //array of characters' stages
 Chinese shan_, bai_, niu_, ren_, shou_, yun_; //constructor --> (RShape[], xloc, yloc)
-int c = 0;
 
 //text effect
 ArrayList<DropText> texts = new ArrayList<DropText>();
 int w_Index;
 String[] words = {"mountain", "white", "ox", "human", "hand", "cloud"}; //a list of English words(translation)
-  
+
+//progress bar
+PVector[] bar = new PVector [6]; //6 stages in total
   
 void setup(){
   //initialize the sketch
@@ -93,11 +95,17 @@ void setup(){
   yun_.getPt();
   yun_.normalizePt();
   
+  //progress bar initialization
+  for(int i=0; i<bar.length; i++){
+    bar[i] = new PVector(230+i*65, 550);
+  }
+  
   //enable smoothing
   smooth();
 }
 
 void draw(){  
+  background(0);
   shan_.drawPt();
   bai_.drawPt();
   niu_.drawPt();
@@ -109,6 +117,22 @@ void draw(){
   for (DropText text : texts) {
     text.display();
   }
+  
+  //draw progress bar
+  pushMatrix();
+  translate(0,0,0);
+  for(int i=0; i<bar.length; i++){
+    stroke(103, 87, 125);
+    strokeWeight(2);
+    if(i == shan_.stageIndex){
+      fill(255);
+      rect(bar[i].x, bar[i].y, 15, 15);
+    }else{
+      noFill();
+      rect(bar[i].x, bar[i].y, 15, 15);
+    }
+  }
+  popMatrix();
 }
 
 void mouseClicked(){      
