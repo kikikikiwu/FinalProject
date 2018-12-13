@@ -1,56 +1,117 @@
-/*
-Frame work & Methods:
-- There are elements "Mountain", "Sun", "Moon", "cloud" and "Bird" in a scenario.
-- Every element can be chosen and highlighted.
-- Once chosen, it will evolute into current Chinese Character smoothly by matching the pixels.
-- The unchosen part will moves backward and become blurry and transparent gradually.
-(- As the evolution goes on, the background music change accordingly (all sound will be added in alpha version 3).)
-- Also, the background color is fading into white, and the character is becoming black.
-- Once the evolution ends, user can click on the character to trigger the next animation.
-- When clicked, the character will break into multiple particles, in the shape of its romanized pinyin (etc. "Mountain" = "S H A N").
-- Particle letter spread away and fall down with gravity, piling up.
-- While space key is pressed, all the letter move and reshape into a keyboard, with the previosly chosen letter highlighted.
-- Highlighted = same font in bold
-- When this reshape process is done, everything fades out
-- The scenario moves forward again and become less blurry and more solid. 
-- Repeat.
-*/
-//-----------
-//load images of mountain, sun, moon, clod, and bird
-//create pixel array for each element
+import geomerative.*;
 
-Mountain mountain = new Mountain();
-Sun sun = new Sun(550, 100, 100);
+RShape[] shan, bai, niu, ren, shou, yun; //array of characters' stages
+Chinese shan_, bai_, niu_, ren_, shou_, yun_; //constructor --> (RShape[], xloc, yloc)
+int c = 0;
 
+//text effect
+ArrayList<DropText> texts = new ArrayList<DropText>();
+int w_Index;
+String[] words = {"mountain", "white", "ox", "human", "hand", "cloud"}; //a list of English words(translation)
+  
+  
 void setup(){
-  size(1200, 600);
-  background(255);
+  //initialize the sketch
+  size(800, 600, P3D);
+  frameRate(60);
+  background(0);
+  
+  //initialize the library
+  RG.init(this);
+  
+  //load graphics
+  shan = new RShape[6]; 
+  shan[0] = RG.loadShape("shan1.svg");
+  shan[1] = RG.loadShape("shan2.svg");
+  shan[2] = RG.loadShape("shan3.svg");
+  shan[3] = RG.loadShape("shan4.svg");
+  shan[4] = RG.loadShape("shan5.svg");
+  shan[5] = RG.loadShape("shan6.svg");
+  
+  bai = new RShape[6];
+  bai[0] = RG.loadShape("bai1.svg");
+  bai[1] = RG.loadShape("bai2.svg");
+  bai[2] = RG.loadShape("bai3.svg");
+  bai[3] = RG.loadShape("bai4.svg");
+  bai[4] = RG.loadShape("bai5.svg");
+  bai[5] = RG.loadShape("bai6.svg");
+  
+  niu = new RShape[6]; 
+  niu[0] = RG.loadShape("niu1.svg");
+  niu[1] = RG.loadShape("niu2.svg");
+  niu[2] = RG.loadShape("niu3.svg");
+  niu[3] = RG.loadShape("niu4.svg");
+  niu[4] = RG.loadShape("niu5.svg");
+  niu[5] = RG.loadShape("niu6.svg");
+  
+  ren = new RShape[6]; 
+  ren[0] = RG.loadShape("ren1.svg");
+  ren[1] = RG.loadShape("ren2.svg");
+  ren[2] = RG.loadShape("ren3.svg");
+  ren[3] = RG.loadShape("ren4.svg");
+  ren[4] = RG.loadShape("ren5.svg");
+  ren[5] = RG.loadShape("ren6.svg");
+  
+  shou = new RShape[6]; 
+  shou[0] = RG.loadShape("shou1.svg");
+  shou[1] = RG.loadShape("shou2.svg");
+  shou[2] = RG.loadShape("shou3.svg");
+  shou[3] = RG.loadShape("shou4.svg");
+  shou[4] = RG.loadShape("shou5.svg");
+  shou[5] = RG.loadShape("shou6.svg");
+  
+  yun = new RShape[6]; 
+  yun[0] = RG.loadShape("yun1.svg");
+  yun[1] = RG.loadShape("yun2.svg");
+  yun[2] = RG.loadShape("yun3.svg");
+  yun[3] = RG.loadShape("yun4.svg");
+  yun[4] = RG.loadShape("yun5.svg");
+  yun[5] = RG.loadShape("yun6.svg");  
+  
+  //assign location & get points for normalization
+  shan_ = new Chinese (shan, 0, 0);    
+  shan_.getPt();
+  shan_.normalizePt();
+  
+  bai_ = new Chinese (bai, width/3, 0);    
+  bai_.getPt();
+  bai_.normalizePt();
+    
+  niu_ = new Chinese (niu, 2*width/3, 0);    
+  niu_.getPt();
+  niu_.normalizePt();
+    
+  ren_ = new Chinese (ren, 0, height/2);    
+  ren_.getPt();
+  ren_.normalizePt();
+    
+  shou_ = new Chinese (shou, width/3, height/2);    
+  shou_.getPt();
+  shou_.normalizePt();
+    
+  yun_ = new Chinese (yun, 2*width/3, height/2);    
+  yun_.getPt();
+  yun_.normalizePt();
+  
+  //enable smoothing
+  smooth();
 }
 
-void draw(){
-  //scene
-    //draw sun
-    //store the pixel loc of sun
-    for (int x = 0; x < sun.x; x+=5){
-      for(int y = 0; y < sun.y; y+=5){
-        color c = get(x, y);
-        if (c == sun.sunC){
-          while (mouseX == x && mouseY == y){
-            sun.display();
-            sun.highlight(); //highlighted when mouse hovered
-           if (mousePressed){
-             sun.evolute(); //sun evolutes into chinese character
-             
-           }
-          }
-        }
-      }
-    }
-            
-    //draw mountain, using a triangle for now
-  mountain.display();
-    //draw moon
-    //draw cloud
-    //draw bird
+void draw(){  
+  shan_.drawPt();
+  bai_.drawPt();
+  niu_.drawPt();
+  ren_.drawPt();
+  shou_.drawPt();
+  yun_.drawPt();   
   
+  //text
+  for (DropText text : texts) {
+    text.display();
+  }
+}
+
+void mouseClicked(){      
+   //add dropping words
+   texts.add(new DropText(mouseX, mouseY, words));
 }
