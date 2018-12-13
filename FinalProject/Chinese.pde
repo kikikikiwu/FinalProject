@@ -134,7 +134,7 @@ class Chinese{
       //draw contour when keypressed, starting from the second stage
       if(keyPressed){
         if(stageIndex >=1){
-        strokeWeight(1);
+        strokeWeight(2);
         stroke(200,150,150,80);
         stage_ct = new RContour(draw_pts);
         stage_ct.draw();
