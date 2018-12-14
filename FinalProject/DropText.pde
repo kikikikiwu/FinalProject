@@ -15,7 +15,7 @@ class DropText {
     word = word_;
     
     //style
-    f = createFont("Monoton-Regular.ttf", 40);
+    f = createFont("Monoton-Regular.ttf", 50);
     dr1 = 0.5;
     dr2 = 1;
     

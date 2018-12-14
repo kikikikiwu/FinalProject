@@ -67,9 +67,9 @@ class Chinese{
     tan = stages[stageIndex].getTangents();
     
     //set matrix for drawPts
-    draw_pts[stagePtIndex].scale(0.32);
-    draw_pts[stagePtIndex].translate(x, y+20);
-    tan[stagePtIndex].scale(0.32);
+    draw_pts[stagePtIndex].scale(0.4);
+    draw_pts[stagePtIndex].translate(x, y+50);
+    tan[stagePtIndex].scale(0.4);
     tan[stagePtIndex].translate(x, y);   
     
     /*
@@ -88,14 +88,14 @@ class Chinese{
   
   void effects(){
     //mouse-controlled camera effect
-    
+    /*
       if(mousePressed){
         //rotate effect
         rotateX(radians(map(mouseY, 0, height, 90, -90)));
         rotateY(radians(map(mouseX, 0, width, -90, 90)));
       }
+      */
       
-      /*
       if(keyPressed && key == CODED){
         if(keyCode == UP || keyCode == RIGHT){
            agl = agl + r;
@@ -103,9 +103,8 @@ class Chinese{
            agl = agl - r;
         }
         rotateX(radians(map(agl, 0, height, 90, -90)));
-        rotateY(radians(map(agl, 0, width, -90, 90)));
-      }
-      */
+        rotateZ(radians(map(agl, 0, width, -90, 90)));
+      }     
        
     //tangent line effect
       //style
@@ -146,16 +145,15 @@ class Chinese{
       eloc.add(new PVector(draw_pts[stagePtIndex].x, draw_pts[stagePtIndex].y));
     
     //contour effect
-      //draw contour when keypressed, starting from the second stage
-      if(keyPressed){
+      //draw contour, starting from the second stage
         if(stageIndex >=1){
         strokeWeight(2);
         stroke(200,150,150,80);
         stage_ct = new RContour(draw_pts);
         stage_ct.draw();
         }
-      }
-  } 
+  }
+
   void intervel(){
     //clean frame
     if(frameCount % (num+intervel) == 0){
@@ -165,5 +163,4 @@ class Chinese{
       pline_e.clear();
     }
   }
-   
 }

@@ -14,7 +14,7 @@ PVector[] bar = new PVector [6]; //6 stages in total
   
 void setup(){
   //initialize the sketch
-  size(800, 600, P3D);
+  size(960, 720, P3D);
   frameRate(60);
   background(0);
   
@@ -97,7 +97,7 @@ void setup(){
   
   //progress bar initialization
   for(int i=0; i<bar.length; i++){
-    bar[i] = new PVector(230+i*65, 550);
+    bar[i] = new PVector(310+i*65, 650);
   }
   
   //enable smoothing
