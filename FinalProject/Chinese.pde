@@ -11,6 +11,8 @@ class Chinese{
   ArrayList<PVector> eloc = new ArrayList<PVector>(); //pen points
   ArrayList<PVector> pline_s = new ArrayList<PVector>(); //purpleLine startings
   ArrayList<PVector> pline_e = new ArrayList<PVector>(); //purpleLine endings
+  
+  float agl = 400, r = 0.5; //camera angle and change rate
    
   //constructor
   Chinese(RShape[] stages_, float x_, float y_){
@@ -86,11 +88,24 @@ class Chinese{
   
   void effects(){
     //mouse-controlled camera effect
+    
       if(mousePressed){
         //rotate effect
         rotateX(radians(map(mouseY, 0, height, 90, -90)));
         rotateY(radians(map(mouseX, 0, width, -90, 90)));
       }
+      
+      /*
+      if(keyPressed && key == CODED){
+        if(keyCode == UP || keyCode == RIGHT){
+           agl = agl + r;
+        }if(keyCode == DOWN || keyCode == LEFT){
+           agl = agl - r;
+        }
+        rotateX(radians(map(agl, 0, height, 90, -90)));
+        rotateY(radians(map(agl, 0, width, -90, 90)));
+      }
+      */
        
     //tangent line effect
       //style
